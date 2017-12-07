@@ -1,0 +1,10 @@
+name: Speech
+title: Speech
+account: ebsmonash
+server: shinyapps.io
+appId: 242948
+bundleId: 1110309
+url: https://ebsmonash.shinyapps.io/Speech/
+when: 1512203279.86121
+asMultiple: FALSE
+asStatic: FALSE

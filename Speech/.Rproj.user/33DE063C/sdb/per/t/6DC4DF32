@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "# credits to @yihui\n# https://github.com/yihui/shiny-apps/tree/master/voice\n# adapted the code above to ggplotly\nlibrary(shiny)\nlibrary(plotly)\nlibrary(ggplot2)\nload(\"data/pisa_au.rda\")\n\nshinyApp(\n  ui = fluidPage(\n    singleton(tags$head(\n      tags$script(src=\"//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js\"),\n      includeScript('init.js')\n    )),\n    div(\n      style = 'display: block; margin: auto; width: 100%; max-width: 1000px',\n      plotlyOutput(\"scatterplot\", height = \"100%\"),\n      helpText(\n        'You are recommended to use Google Chrome to play with this app.',\n        'To change the title, say something that starts with \"title\", e.g.',\n        '\"title I love the R language\", or \"title Good Morning\".',\n        'To change the color of points, say something that starts with \"color\",',\n        'e.g. color \"blue\", or color \"green\". When the app is unable to recognize the color,',\n        'the points will turn gray.',\n        'To add a regression line, say \"regression\".',\n        'To make the points bigger or smaller, say \"bigger\" or \"smaller\".'\n      )\n    )\n  ),\n  server = function(input, output) {\n    output$scatterplot <- renderPlotly({\n      col <- input$color\n      if (length(col) == 0 || !(col %in% colors())) {\n        col <- \"grey10\"\n      }\n      p <- ggplot(pisa_au, aes(x = math, y = read)) +\n        geom_point(colour = col, size = input$bigger, alpha = 0.7) +\n        facet_grid(~ gender) +\n        theme(aspect.ratio = 1)\n\n      if (input$yes != \"no\") {\n        p <- p + geom_smooth(method = \"lm\", se = TRUE)\n      }\n\n      p <- p + ggtitle(input$title)\n\n      ggplotly(p)\n    })\n  }\n)\n",
+    "created" : 1508977144087.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1720693027",
+    "id" : "6DC4DF32",
+    "lastKnownWriteTime" : 1508998420,
+    "last_content_update" : 1508998420,
+    "path" : "~/forwards.github.io/teaching_examples/NZ_girls/Speech/app.R",
+    "project_path" : "app.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

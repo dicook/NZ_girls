@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#\n# This is a Shiny web application. You can run the application by clicking\n# the 'Run App' button above.\n#\n# Find out more about building applications with Shiny here:\n#\n#    http://shiny.rstudio.com/\n#\nlibrary(tidyverse)\nlibrary(gridExtra)\nlibrary(ggthemes)\nlibrary(ggmap)\nlibrary(forcats)\nlibrary(ISOcodes)\ndata(\"ISO_3166_1\")\npisa_gap <- read_csv(\"pisa_gap.csv\")\npisa_gap <- pisa_gap %>%\n  mutate(Name = fct_reorder(Name, mathgap)) %>%\n  mutate(direction=ifelse(mathgap>0, \"boys\", \"girls\"))\nworld_map <- map_data(\"world\")\n\npisa_gap <- pisa_gap %>%\n  mutate(Name = recode(Name, \"Czechia\"=\"Czech Republic\",\n                       \"Korea, Republic of\"=\"South Korea\",\n                       \"Macedonia, Republic of\"=\"Macedonia\",\n                       \"Moldova, Republic of\"=\"Moldova\",\n                       \"Russian Federation\"=\"Russia\",\n                       \"Taiwan, Province of China\"=\"Taiwan\",\n                       \"Trinidad and Tobago\"=\"Trinidad\",\n                       \"United States\"=\"USA\",\n                       \"United Kingdom\"=\"UK\",\n                       \"Viet Nam\"=\"Vietnam\"))\nworld_map$region[world_map$subregion == \"Hong Kong\"] <- \"Hong Kong\"\nworld_map$region[world_map$subregion == \"Macao\"] <- \"Macao\"\nto_map <- left_join(world_map, pisa_gap, by=c(\"region\"=\"Name\"))\nrealvars <- c(\"math_m\", \"math_f\", \"read_m\", \"read_f\",\n              \"science_m\", \"science_f\",\n              \"mathgap\", \"readgap\", \"sciencegap\")\n\nlibrary(shiny)\nlibrary(viridis)\n\n# Define UI for application that draws a histogram\nui <- fluidPage(\n\n   # Application title\n   titlePanel(\"PISA Scores across the globe\"),\n\n   # Sidebar with a slider input for number of bins\n   sidebarLayout(\n      sidebarPanel(\n        selectInput('y', 'Colour by', realvars)\n      ),\n\n      # Show a plot of the generated distribution\n      mainPanel(\n         plotOutput(\"map\")\n      )\n   )\n)\n\n# Define server logic required to draw a histogram\nserver <- function(input, output) {\n\n   output$map <- renderPlot({\n      # generate bins based on input$bins from ui.R\n     ggplot(to_map, aes(map_id = region)) +\n       geom_map(aes_string(fill=input$y), map = world_map,\n                color=\"grey70\", size=0.1) +\n       scale_fill_viridis(na.value=\"grey99\") +\n       expand_limits(x = world_map$long, y = world_map$lat) +\n       theme_few() +\n       theme(legend.position = \"bottom\",\n             legend.key.width=unit(1.5, \"cm\"),\n             axis.ticks = element_blank(),\n             axis.title = element_blank(),\n             axis.text =  element_blank())\n   })\n}\n\n# Run the application\nshinyApp(ui = ui, server = server)\n\n",
+    "created" : 1509158527830.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1895929527",
+    "id" : "CE8A1800",
+    "lastKnownWriteTime" : 1509159786,
+    "last_content_update" : 1509159786463,
+    "path" : "~/forwards.github.io/teaching_examples/NZ_girls/pisa_world/app.R",
+    "project_path" : "app.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

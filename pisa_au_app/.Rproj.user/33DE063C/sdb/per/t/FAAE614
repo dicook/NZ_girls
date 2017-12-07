@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"Explore our PISA standardised scores\"\noutput: \n  flexdashboard::flex_dashboard:\n    orientation: columns\n    social: menu\n    source_code: embed\nruntime: shiny\n---\n\n```{r setup, include=FALSE}\nlibrary(flexdashboard)\nlibrary(tidyverse)\nlibrary(forcats)\nlibrary(plotly)\nlibrary(ggthemes)\nload(\"pisa_au.rda\")\ncatvars <- c(\"state\", \"schtype\", \"yr\", \"birthmonth\", \"gender\")\nrealvars <- c(\"math\", \"science\", \"read\")\n```\n\n\nOutputs {.tabset .tabset-fade}\n-----------------------------------------------------------------------\n\n### Boxplots\n\n```{r}\nfillRow(height = 600, flex = c(2, 4),\n  sidebarPanel(\n      selectInput('x', 'X', catvars),\n      selectInput('y', 'Y', realvars),\n      selectInput('color', 'Color', c('None', catvars)),\n      width = 10\n  ),\n  plotlyOutput(\"boxplots\", height = \"100%\")\n)\n\noutput$boxplots <- renderPlotly({\n  p1 <- ggplot(pisa_au, aes_string(x = input$x, y = input$y)) +\n    geom_boxplot()\n  \n  if (input$color != 'None')\n    p1 <- p1 + aes_string(fill = input$color)\n\n  ggplotly(p1) %>% \n    layout(boxmode = \"group\", legend = list(x = 0, y = 0, orientation = 'h'))\n})\n```\n\n### Scatterplot\n\n```{r}\nfillRow(height = 600, flex = c(2, 4),\n  sidebarPanel(\n      selectInput('x2', 'X', realvars, \"read\"),\n      selectInput('y2', 'Y', realvars, \"math\"),\n      selectInput('color2', 'Color', c('None', catvars)),\n      sliderInput('alpha', 'Alpha', 0, 1, 1, 0.05),\n      width = 10\n  ),\n  plotlyOutput(\"scatterplot\", height = \"100%\")\n)\n\noutput$scatterplot <- renderPlotly({\n  p2 <- ggplot(pisa_au, aes_string(x = input$x2, y = input$y2)) +\n    geom_point(alpha = input$alpha) +\n    theme(aspect.ratio = 1)\n  \n  if (input$color2 != 'None')\n    p2 <- p2 + aes_string(colour = input$color2)\n\n  ggplotly(p2) %>% \n    layout(legend = list(x = 0, y = 0, orientation = 'h'))\n})\n```\n\n",
+    "created" : 1508997741188.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "111292818",
+    "id" : "FAAE614",
+    "lastKnownWriteTime" : 1512197559,
+    "last_content_update" : 1512197559818,
+    "path" : "~/forwards.github.io/teaching_examples/NZ_girls/pisa_au_app/pisa.Rmd",
+    "project_path" : "pisa.Rmd",
+    "properties" : {
+        "last_setup_crc32" : ""
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
